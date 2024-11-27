@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ucapan Ulang Tahun</title>
+    <style>
+        /* Reset CSS */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #4a90e2, #a1c4fd); /* Gradient biru */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Ubah ke flex-start untuk memungkinkan scroll */
+            color: #333;
+            overflow-x: hidden; /* Sembunyikan scroll horizontal */
+            position: relative;
+            padding-top: 20px; /* Tambahkan padding atas untuk ruang */
+        }
+
+        /* Balon dengan animasi */
+        .balloons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .balloon {
+            position: absolute;
+            width: 60px;
+            height: 80px;
+            animation: floatBalloon 10s infinite linear;
+        }
+
+        .balloon img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Animasi melayang ke atas dengan variasi posisi dan kecepatan */
+        @keyframes floatBalloon {
+            0% {
+                bottom: -150px;
+                transform: translateX(0);
+            }
+            100% {
+                bottom: 100%;
+                transform: translateX(var(--x-shift)); /* Variasi pergerakan horizontal */
+            }
+        }
+
+        /* Balon berada di posisi kiri atas */
+        .top-left {
+            left: 10%;
+            animation: floatBalloon 10s infinite linear;
+        }
+
+        /* Balon berada di posisi kanan atas */
+        .top-right {
+            right: 10%;
+            animation: floatBalloon 12s infinite linear;
+        }
+
+        /* Balon berada di posisi kiri bawah */
+        .bottom-left {
+            left: 10%;
+            bottom: -10%;
+            animation: floatBalloon 8s infinite linear;
+        }
+
+        /* Balon berada di posisi kanan bawah */
+        .bottom-right {
+            right: 10%;
+            bottom: -10%;
+            animation: floatBalloon 8s infinite linear;
+        }
+
+        /* Balon di kanan bawah */
+        .right-bottom {
+            right: 10%;
+            bottom: 0;
+            transform: translateX(0);
+            animation: floatBalloon 10s infinite linear;
+        }
+
+        /* Kontainer utama yang berisi foto dan teks */
+        .container {
+            text-align: center; /* Rata tengah untuk semua teks */
+            background: #ffffff; /* Soft white background */
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
+            width: 90%;
+            max-width: 500px;
+            position: relative; /* Ubah ke relative untuk scroll */
+            z-index: 2;
+            box-sizing: border-box;
+            margin-bottom: 20px; /* Tambahkan margin bawah untuk ruang */
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #2c3e50; /* Warna gelap untuk teks */
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #555;
+            margin: 15px 0;
+        }
+
+        .photo-frame {
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+            border: 5px solid #2c3e50; /* Warna gelap untuk border */
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: auto;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        input {
+            border: 1px solid #ddd;
+            font-size: 1em;
+        }
+
+        button {
+            background-color: #2c3e50; /* Warna gelap */
+            color: #fff;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #1a252f; /* Warna lebih gelap saat hover */
+        }
+
+        audio {
+            display: none;
+        }
+
+        /* Popup styling */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 1.0); /* Gelapkan latar belakang lebih gelap */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .popup-content {
+            background: #fff6e5; /* Soft cream background for the popup */
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .popup-content h2 {
+            font-size: 1.5em;
+            color: #2c3e50; /* Warna gelap untuk teks */
+        }
+
+        .popup-content p {
+            font-size: 1.1em;
+            color: #555;
+            margin: 15px 0;
+        }
+
+        .popup.visible {
+            visibility: visible; /* Tampilkan popup */
+            opacity: 1; /* Tampilkan popup */
+        }
+
+        /* Responsiveness: For mobile screens */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            p {
+                font-size: 1em;
+            }
+
+            .photo-frame {
+                width: 120px;
+                height: 120px;
+            }
+
+            button {
+                font-size: 1em;
+                padding: 10px;
+            }
+        }
+
+        /* Responsive for very small screens (portrait mobile) */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .container {
+                width: 90%;
+                padding: 15px;
+            }
+
+            .photo-frame {
+                width: 100px;
+                height: 100px;
+            }
+
+            button {
+                font-size: 0.9em;
+                padding: 8px;
+            }
+        }
+
+        /* Styling untuk timer hitung mundur */
+        #countdown {
+            background-color: #ffffff; /* Latar belakang putih */
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px; /* Jarak antara timer dan form */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50; /* Warna gelap untuk teks timer */
+        }
+
+        /* Styling untuk puisi */
+        .poem {
+            margin-top: 20px; /* Jarak antara ucapan dan puisi */
+            font-style: italic; /* Gaya miring untuk puisi */
+            text-align: center; /* Rata tengah untuk puisi */
+        }
+
+        .poem p {
+            margin: 5px 0; /* Jarak antar baris puisi */
+            line-height: 1.5; /* Tinggi baris untuk keterbacaan */
+        }
+
+        strong {
+            color: #ff6347; /* Warna untuk kata-kata yang ditekankan */
+        }
+
+        /* Animasi Partikel Konfeti */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: confetti-animation 1s forwards;
+        }
+
+        .video-container {
+            margin-top: 50px; /* Jarak dari atas */
+            margin-bottom: 20px; /* Jarak dari bawah */
+            display: flex; /* Menggunakan Flexbox */
+            justify-content: center; /* Mengatur konten di tengah secara horizontal */
+            align-items: center; /* Mengatur konten di tengah secara vertikal */
+        }
+
+        video {
+            margin-left: 20px; /* Jarak dari kiri */
+            margin-right: 20px; /* Jarak dari kanan */
+            width: 320px; /* Lebar video */
+            height: 240px; /* Tinggi video */
+        }
+
+        .info-text {
+            font-size: 1.2em; /* Ukuran font */
+            font-weight: bold; /* Menebalkan teks */
+            margin: 20px 0; /* Jarak atas dan bawah */
+            color: #333; /* Warna teks */
+        }
+
+        @keyframes confetti-animation {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Balon dengan animasi -->
+    <div class="balloons">
+        <div class="balloon top-left">
+            <img src="balloon1.png" alt="Balloon 1">
+        </div>
+        <div class="balloon bottom-left">
+            <img src="balloon3.png" alt="Balloon 3">
+        </div>
+        <div class="balloon bottom-right">
+            <img src="balloon4.png" alt="Balloon 4">
+        </div>
+        <div class="balloon right-bottom">
+            <img src="balloon5.png" alt="Balloon 5">
+        </div>
+    </div>
+
+    <!-- Kotak tempat foto dan ucapan selamat ultah -->
+    <div class="container">
+        <h1>HARI SPESIAL KU!</h1>
+        <p>Hati-hati, sebentar lagi saya ultah! Jaga kesehatan kalian.</p>
+        <div class="poem">
+            <p>“Pergi <strong>NGEPET</strong> bersama <strong>TOBRUT</strong>,”</p>
+            <p>Makan Sayur <strong>PAKU</strong> bersama <strong>ORANG TUA</strong>,"</p>
+            <p>“Kosongkan <strong>DOMPET,</strong> kosongkan <strong>PERUT</strong>."</p>
+            <p>“Hari ini <strong>AKU</strong> traktir <strong>SEMUA!</strong>."</p>
+        </div>
+        <p>Tentukan tujuan kalian kawan! 🎈</p>
+
+        <!-- Timer Hitung Mundur -->
+        <div id="countdown">
+            <h2>Timer Hitung Mundur</h2>
+            <div id="timer">
+                <span id="days">0</span> hari 
+                <span id="hours">0</span> jam 
+                <span id="minutes">0</span> menit 
+                <span id="seconds">0</span> detik
+            </div>
+        </div>
+
+        <div class="photo-frame">
+            <img src="jidan.jpg" alt="Foto Zaidan Abqari">
+        </div>
+        <audio id="birthdaySong" src="ultah.mp3" loop></audio>
+
+        <!-- Teks Informasi -->
+        <p class="info-text">✨ Isi form ini setelah kalian isi, kalian akan dapat video Rare ku! 🎥</p>
+
+        <form id="birthdayForm">
+            <input type="text" id="userName" placeholder="Masukkan Nama" required>
+            <input type="text" id="destination" placeholder="Tentukan Tujuan" required>
+            <button type="submit">Kirim Ucapan</button>
+        </form>
+
+        <div class="video-container">
+            <video id="birthdayVideo" controls style="display: none;">
+                <source src="jidan.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <!-- Pop-up untuk ucapan spesial -->
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <h2>Ucapan Spesial</h2>
+            <p>Sebentar lagi hari spesialku! Semoga kalian semua diberi kebahagiaan, kesehatan, dan keberkahan. Jangan lupa siapkan diri kalian ya!</p>
+            <button id="closePopup">Buka</button>
+        </div>
+    </div>
+
+    <script>
+        // Timer Hitung Mundur ke tanggal 23 Januari 2025
+        const countdownDate = new Date("December 1, 2024 23:59:59").getTime();
+
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerHTML = days;
+            document.getElementById("hours").innerHTML = hours;
+            document.getElementById("minutes").innerHTML = minutes;
+            document.getElementById("seconds").innerHTML = seconds;
+
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("timer").innerHTML = "WAKTU HABIS";
+            }
+        }, 1000);
+
+        document.getElementById('birthdayForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const userName = document.getElementById('userName').value;
+            const destination = document.getElementById('destination').value;
+
+            // Pesan acak
+            const randomMessages = [
+                "Usia mu semakin bertambah, semakin tua dirimu kawan ingat Traktiran.",
+                "Semakin dekat pula ajal mu, banyak-banyak bersedekah (Traktiran) agar jadi amal jariah kelak jika kamu mati.",
+                "Hidup ini singkat, manfaatkan waktu untuk berbuat baik Jangan Lupa Dompet Di isi buat bayar nanti.",
+                "Semoga setiap langkahmu membawa berkah dan kebahagiaan dan Jangan lupa Traktiran.",
+                "Jangan lupa untuk selalu bersyukur atas setiap detik yang diberikan Dan Ingat Traktiran."
+            ];
+
+            // Memilih pesan acak
+            const randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+
+            // Membuka WhatsApp dengan pesan yang sudah disertakan
+            const phoneNumber = "628990247439"; // Nomor WhatsApp tujuan
+            const message = `${randomMessage} Dari: ${userName}, Tujuan: ${destination}`;
+            const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            
+            window.open(whatsappLink, '_blank'); // Mengarahkan ke WhatsApp
+
+            // Tampilkan video
+            const video = document.getElementById('birthdayVideo');
+            video.style.display = 'block'; // Tampilkan video
+            video.play(); // Putar video
+        });
+
+        // Menampilkan popup ketika tombol "Buka" ditekan
+        document.getElementById('closePopup').addEventListener('click', function() {
+            document.getElementById('popup').style.display = 'none';
+            // Menambahkan musik setelah popup ditutup
+            const music = document.getElementById('birthdaySong');
+            music.play();
+        });
+
+        // Menampilkan popup
+        function showPopup() {
+            const popup = document.getElementById('popup');
+            popup.classList.add('visible');
+        }
+
+        // Panggil fungsi untuk menampilkan popup saat halaman dimuat
+        window.onload = showPopup;
+
+        // Fungsi untuk membuat partikel konfeti
+        function createConfetti(x, y) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+
+            // Variasi ukuran dan warna
+            const colors = ['#ff6347', '#ffd700', '#32cd32', '#1e90ff', '#ff69b4', '#ff4500', '#00bfff'];
+            const size = Math.random() * 10 + 5; // Ukuran acak antara 5px dan 15px
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.width = size + 'px';
+            confetti.style.height = size + 'px';
+
+            confetti.style.left = x + 'px';
+            confetti.style.top = y + 'px';
+            document.body.appendChild(confetti);
+
+            // Menghapus konfeti setelah animasi selesai
+            confetti.addEventListener('animationend', () => {
+                confetti.remove();
+            });
+        }
+
+        // Membuat konfeti dari kiri dan kanan
+        setInterval(() => {
+            const xLeft = Math.random() * (window.innerWidth / 2); // Posisi acak dari kiri
+            const xRight = window.innerWidth - Math.random() * (window.innerWidth / 2); // Posisi acak dari kanan
+            createConfetti(xLeft, window.innerHeight - 50); // Partikel dari kiri
+            createConfetti(xRight, window.innerHeight - 50); // Partikel dari kanan
+        }, 300); // Interval untuk membuat konfeti
+    </script>
+</body>
+</html>
