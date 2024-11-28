@@ -404,6 +404,16 @@
     <script>
         // Timer Hitung Mundur ke tanggal 23 Januari 2025
         const countdownDate = new Date("December 1, 2024 23:59:59").getTime();
+// Menampilkan popup ketika tombol "Buka" ditekan
+document.getElementById('closePopup').addEventListener('click', function() {
+    document.getElementById('popup').style.display = 'none';
+    // Menambahkan musik setelah popup ditutup
+    const music = document.getElementById('birthdaySong');
+    music.play();
+    
+    // Scroll ke atas halaman
+    window.scrollTo(0, 0); // Mengatur scroll ke atas
+});
 
         const x = setInterval(function() {
             const now = new Date().getTime();
